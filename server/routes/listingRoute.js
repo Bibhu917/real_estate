@@ -7,7 +7,6 @@ const listingModel = require('../models/listiingmodel')
 listingRouter.post('/create',async(req,res)=>{
     try {
     const token = req.cookies.access_token;
-    console.log('Received Token:', token);
   
     if(!token){
         return res.status(401).send({success:false,message:"Unauthorized"})
@@ -33,5 +32,26 @@ listingRouter.post('/create',async(req,res)=>{
         
     }
 })
+// Route for getting a listing by ID with token verification and access control
+listingRouter.get('/list/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      // Assuming that 'id' is the user ID you want to search for in the 'userRef' field
+      const listings = await listingModel.find({ userRef: id });
+  
+      if (listings.length === 0) {
+        return res.status(404).send({ success: false, message: "Listings not found" });
+      }
+  
+      res.status(200).send({ success: true, message: "Listings found:", listings });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send({ success: false, message: "Server error" });
+    }
+  });
+  
+  
+  
 
 module.exports = listingRouter;
