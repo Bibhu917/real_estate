@@ -69,4 +69,18 @@ listingRouter.get("/list/:id", async (req, res) => {
   }
 });
 
+listingRouter.delete('/deletelist/:id',async(req,res)=>{
+  try {
+    const {id} = req.params;
+    const listing = await listingModel.findByIdAndDelete(id);
+    if(!listing){
+      return res.status(404).send({success:false,message:"Listing Not Found"});
+    }
+    return res.status(200).send({success:true,message:"Listing Deleted Successfully",listing});
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({success:false,message:"Internal Server Error",error})
+  }
+})
+
 module.exports = listingRouter;

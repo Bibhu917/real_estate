@@ -120,6 +120,32 @@ export default function Profile() {
     }
   };
 
+  const handleDeleteListing=async(listingId)=>{
+    try {
+      console.log(currentUser.rest._id);
+      const response = await axios.delete(`/api/listing/deletelist/${listingId}`);
+      console.log(response);
+      if(response.data.success===false){
+        console.log(response.data.message)
+      }
+      // setformData({
+      //   ...formData,
+      //   imageUrls: formData.imageUrls.filter((_, i) => i !== index),
+      // });
+      setshowListing((prev) =>
+      prev.map((listing) => {
+        if (listing._id === listingId) {
+          // Modify the specific listing to mark it as deleted
+          return { ...listing, deleted: true };
+        }
+        return listing;
+      })
+    );
+      } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div className="profilePage max-w-lg mx-auto p-3">
       <div className="profileHeader text-center my-7">
@@ -223,7 +249,7 @@ export default function Profile() {
                  />
                  <p className="font-semibold text-slate-700 hover:underline truncate">{listing.name}</p> {/* Display the name from the root of the listing object */}
                  <div className="flex flex-col items-center">
-                  <button className="text-red-700 uppercase">Delete</button>
+                  <button className="text-red-700 uppercase" onClick={()=>handleDeleteListing(listing._id)}>Delete</button>
                   <button className="text-green-700 uppercase">Edit</button>
                  </div>
                </div>
