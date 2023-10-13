@@ -77,34 +77,34 @@ authRouter.post('/signin', async (req, res) => {
 authRouter.get('/listOfUsers',async(req,res)=>{
     try {
         const userList = await userModel.find();
-        return res.status(200).json({success: true, message:"User List",userList})
+        return res.status(200).json({success: true,message:"User List",userList})
     } catch (error) {
         console.log(error);
         return res.status(500).json({success:false,message:"Internal Server Error"})
     }
 })
 
-authRouter.post('/google',async(req,res)=>{
-    try {
-        const user = await userModel.findOne({email:req.body.email}); 
-        if(user){
-            const token = jwt.sign({id:user._id},process.env.JWT_SECRET_KEY);
-            const {password:pass,...rest}=user._doc
-            return res.cookie('access_token',token,{httpOnly:true}).status(200).json(rest);
-        }else{
-            const generatedPassword = Math.random().toString(36).slice(-8) +  Math.random().toString(36).slice(-8);
-            const hashedPassword = bcrypt.hashSync(generatedPassword,10);
-            const newuser = new userModel({username:req.body.name.split("").join("").toLowerCase()+Math.random().toString(36).slice(-8),email:req.body.email,password:hashedPassword,avatar:req.body.photo}); 
-            await newuser.save();
-            const token = jwt.sign({id:newuser._id},process.env.JWT_SECRET_KEY);
-            const {password:pass,...rest} = newuser._doc;
-            return res.cookie('access_token',token,{httpOnly:true}).status(200).json(rest);
-        }
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({success:false,message:"Internal Server Error"})
-    }
-})
+// authRouter.post('/google',async(req,res)=>{
+//     try {
+//         const user = await userModel.findOne({email:req.body.email}); 
+//         if(user){
+//             const token = jwt.sign({id:user._id},process.env.JWT_SECRET_KEY);
+//             const {password:pass,...rest}=user._doc
+//             return res.cookie('access_token',token,{httpOnly:true}).status(200).json(rest);
+//         }else{
+//             const generatedPassword = Math.random().toString(36).slice(-8) +  Math.random().toString(36).slice(-8);
+//             const hashedPassword = bcrypt.hashSync(generatedPassword,10);
+//             const newuser = new userModel({username:req.body.name.split("").join("").toLowerCase()+Math.random().toString(36).slice(-8),email:req.body.email,password:hashedPassword,avatar:req.body.photo}); 
+//             await newuser.save();
+//             const token = jwt.sign({id:newuser._id},process.env.JWT_SECRET_KEY);
+//             const {password:pass,...rest} = newuser._doc;
+//             return res.cookie('access_token',token,{httpOnly:true}).status(200).json(rest);
+//         }
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).json({success:false,message:"Internal Server Error"})
+//     }
+// })
 authRouter.get('/signOut',async(req,res)=>{
     try {
        res.clearCookie('access_token');

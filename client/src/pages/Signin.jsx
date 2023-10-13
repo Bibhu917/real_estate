@@ -4,7 +4,6 @@ import axios from 'axios';
 import {signInStart,signInFailure,signInSuccess} from '../redux/user/userslice'
 import Loadspinner from '../components/Loadspinner';
 import { useDispatch, useSelector } from 'react-redux';
-import OAuth from '../components/OAuth';
 
 export default function Signin() {
   const [loginError, setloginError] = useState({})
@@ -28,9 +27,10 @@ export default function Signin() {
     }
     try {
       const response = await axios.post('/api/auth/signin',data);
+      console.log(response)
       dispatch(signInStart(data));
       if(response.data.success===true){
-       dispatch(signInSuccess(response.data.data));
+       dispatch(signInSuccess(response.data));
         loginnavigate('/');
       }
     } catch (error) {
@@ -77,7 +77,6 @@ export default function Signin() {
         >
            {loading ? "Signing In..." : "Sign In"}
         </button>
-        <OAuth />
       </form>
       <div className="accountParagraph flex gap-2 items-center my-2">
         <p>Dont Have an account?</p>

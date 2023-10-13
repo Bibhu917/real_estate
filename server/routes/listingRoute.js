@@ -1,57 +1,72 @@
-const express = require('express');
+const express = require("express");
 const listingRouter = express.Router();
-const jwt = require('jsonwebtoken');
-const listingModel = require('../models/listiingmodel')
+const jwt = require("jsonwebtoken");
+const listingModel = require("../models/listiingmodel");
 
-
-listingRouter.post('/create',async(req,res)=>{
-    try {
+listingRouter.post("/create", async (req, res) => {
+  try {
     const token = req.cookies.access_token;
-  
-    if(!token){
-        return res.status(401).send({success:false,message:"Unauthorized"})
-       }
-       jwt.verify(token,process.env.JWT_SECRET_KEY,async (err,user)=>{
-        if (err) {
-            console.error('Token Verification Error:', err);
-            return res.status(403).send({ success: false, message: "Forbidden" });
-          }
-        try {
-            const listing = new listingModel({...req.body});
-            await listing.save();
-            return res.status(201).send({success:true,message:"Listing Created Successfully",listing})
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send({ success: false, message: "Internal Server Erro occur while ftching create listig route api" });
-        }
-       })
-        
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({success:false,messgae:"Internal Server Erro occur while ftching create listig route api"})
-        
+    console.log(token);
+
+    if (!token) {
+      return res.status(401).send({ success: false, message: "Unauthorized" });
     }
-})
-// Route for getting a listing by ID with token verification and access control
-listingRouter.get('/list/:id', async (req, res) => {
-    try {
-      const { id } = req.params;
-  
-      // Assuming that 'id' is the user ID you want to search for in the 'userRef' field
-      const listings = await listingModel.find({ userRef: id });
-  
-      if (listings.length === 0) {
-        return res.status(404).send({ success: false, message: "Listings not found" });
+    jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, user) => {
+      if (err) {
+        console.error("Token Verification Error:", err);
+        return res.status(403).send({ success: false, message: "Forbidden" });
       }
-  
-      res.status(200).send({ success: true, message: "Listings found:", listings });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).send({ success: false, message: "Server error" });
+      try {
+        const listing = new listingModel({ ...req.body });
+        await listing.save();
+        return res
+          .status(201)
+          .send({
+            success: true,
+            message: "Listing Created Successfully",
+            listing,
+          });
+      } catch (error) {
+        console.log(error);
+        return res
+          .status(500)
+          .send({
+            success: false,
+            message:
+              "Internal Server Erro occur while ftching create listig route api",
+          });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .send({
+        success: false,
+        messgae:
+          "Internal Server Erro occur while ftching create listig route api",
+      });
+  }
+});
+
+listingRouter.get("/list/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const listings = await listingModel.find({ userRef: id });
+
+    if (listings.length === 0) {
+      return res
+        .status(404)
+        .send({ success: false, message: "Listings not found" });
     }
-  });
-  
-  
-  
+
+    res
+      .status(200)
+      .send({ success: true, message: "Listings found:", listings });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ success: false, message: "Server error" });
+  }
+});
 
 module.exports = listingRouter;

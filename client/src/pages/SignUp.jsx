@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loadspinner from "../components/Loadspinner";
-import OAuth from "../components/OAuth";
 
 export default function SignUp() {
   const [error, setError] = useState({})
@@ -91,7 +90,6 @@ export default function SignUp() {
         >
             {isLoading ? "Signing Up..." : "Sign Up"}
         </button>
-        <OAuth />
       </form>
       <div className="accountParagraph flex gap-2 items-center my-2">
         <p>Have an account?</p>

@@ -11,3 +11,18 @@ outline: unset !important;
 .imageRtyles{
     width: 40rem !important;
 }
+.Textwrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.profilediv{
+    height: 60px;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.profilediv .lletterFont{
+    font-size: 20px;
+}
