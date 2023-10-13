@@ -20,14 +20,13 @@ import { useNavigate, Link, useParams } from "react-router-dom";
 import { app } from "../firebase";
 export default function Profile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
-
-  console.log(currentUser);
   const fileRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [file, setfile] = useState(undefined);
   const [showListingError, setshowListingError] = useState(false);
   const [filepercent, setfilepercent] = useState(0);
+  const [showListing, setshowListing] = useState([])
   const [fileUploadError, setfileUploadError] = useState(false);
   const [updateSuccess, setupdateSuccess] = useState(false);
   const [formData, setformData] = useState({});
@@ -105,14 +104,17 @@ export default function Profile() {
 
   const showHandleListings = async (e) => {
     try {
-      console.log(currentUser.data._id);
+      setshowListingError(false);
+      console.log(currentUser.rest._id);
       const response = await axios.get(
-        `/api/listing/list/${currentUser.data._id}`
+        `/api/listing/list/${currentUser.rest._id}`
       );
       console.log(response);
       if (response.data.success === false) {
-        setshowListingError("No listings found");
+        setshowListingError(true);
+        return;
       }
+      setshowListing(response.data.listings)
     } catch (error) {
       setshowListingError(true);
     }
@@ -208,6 +210,28 @@ export default function Profile() {
         <p className="text-red-500 mt-5">
           {showListingError ? "Error showing listings" : ""}
         </p>
+        {showListing && showListing.length>0 &&(
+          showListing.map((listing,index)=>(
+            <div key={listing._id} className="">
+              <Link to={`/listing/${listing._id}`}>
+               {listing.imageUrls.map((imageurl,index)=>(
+                 <div key={index} className="border rounded-lg flex items-center justify-between p-3">
+                 <img
+                   src={imageurl}
+                   alt="listing image"
+                   className="h-16 w-16 object-contain rounded-lg"
+                 />
+                 <p className="font-semibold text-slate-700 hover:underline truncate">{listing.name}</p> {/* Display the name from the root of the listing object */}
+                 <div className="flex flex-col items-center">
+                  <button className="text-red-700 uppercase">Delete</button>
+                  <button className="text-green-700 uppercase">Edit</button>
+                 </div>
+               </div>
+               ))}
+              </Link>
+              </div>
+          ))
+        )}
       </div>
     </div>
   );

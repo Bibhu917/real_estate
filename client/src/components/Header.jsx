@@ -5,7 +5,6 @@ import {useSelector} from 'react-redux'
 
 export default function Header() {
   const {currentUser} = useSelector(state=>state.user);
-  console.log(currentUser);
   const getFirstLetter = (name) => {
     return name ? name.charAt(0).toUpperCase() : '';
   };

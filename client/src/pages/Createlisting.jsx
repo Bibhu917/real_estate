@@ -134,7 +134,7 @@ export default function Createlisting() {
         type: formData.type,
         offer: formData.offers,
         imageUrls: formData.imageUrls,
-        userRef: currentUser.data._id,
+        userRef: currentUser.rest._id,
       };
       setloading(true);
       seterror(false);
