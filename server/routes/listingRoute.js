@@ -83,4 +83,19 @@ listingRouter.delete('/deletelist/:id',async(req,res)=>{
   }
 })
 
+listingRouter.put('/updatelist/:id',async(req,res)=>{
+  try {
+    const {id} = req.params;
+    const listingdata = req.body
+    const listing = await listingModel.findByIdAndUpdate(id,listingdata,{new:true});
+    if(!listing){
+      return res.status(404).send({success:false,message:"List not found"});
+    }
+    return res.status(200).send({success:true,message:"List Update successfully",listing});
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({success:false,message:"Internal Server Error"});
+  }
+})
+
 module.exports = listingRouter;

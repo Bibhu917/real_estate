@@ -113,4 +113,5 @@ authRouter.get('/signOut',async(req,res)=>{
         return res.status(500).send({success:false,messgae:"Server Error"})
     }
 })
+
 module.exports = authRouter;

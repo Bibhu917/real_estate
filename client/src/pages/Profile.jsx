@@ -128,14 +128,9 @@ export default function Profile() {
       if(response.data.success===false){
         console.log(response.data.message)
       }
-      // setformData({
-      //   ...formData,
-      //   imageUrls: formData.imageUrls.filter((_, i) => i !== index),
-      // });
       setshowListing((prev) =>
       prev.map((listing) => {
         if (listing._id === listingId) {
-          // Modify the specific listing to mark it as deleted
           return { ...listing, deleted: true };
         }
         return listing;
