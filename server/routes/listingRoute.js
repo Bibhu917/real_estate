@@ -19,42 +19,35 @@ listingRouter.post("/create", async (req, res) => {
       try {
         const listing = new listingModel({ ...req.body });
         await listing.save();
-        return res
-          .status(201)
-          .send({
-            success: true,
-            message: "Listing Created Successfully",
-            listing,
-          });
+        return res.status(201).send({
+          success: true,
+          message: "Listing Created Successfully",
+          listing,
+        });
       } catch (error) {
         console.log(error);
-        return res
-          .status(500)
-          .send({
-            success: false,
-            message:
-              "Internal Server Erro occur while ftching create listig route api",
-          });
+        return res.status(500).send({
+          success: false,
+          message:
+            "Internal Server Erro occur while ftching create listig route api",
+        });
       }
     });
   } catch (error) {
     console.log(error);
-    return res
-      .status(500)
-      .send({
-        success: false,
-        messgae:
-          "Internal Server Erro occur while ftching create listig route api",
-      });
+    return res.status(500).send({
+      success: false,
+      messgae:
+        "Internal Server Erro occur while ftching create listig route api",
+    });
   }
 });
-
 listingRouter.get("/list/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const listings = await listingModel.find({ userRef: id });
+    const listing = await listingModel.find({ userRef: id });
 
-    if (listings.length === 0) {
+    if (!listing) {
       return res
         .status(404)
         .send({ success: false, message: "Listings not found" });
@@ -62,40 +55,55 @@ listingRouter.get("/list/:id", async (req, res) => {
 
     res
       .status(200)
-      .send({ success: true, message: "Listings found:", listings });
+      .send({ success: true, message: "Listings found:", listing });
   } catch (error) {
     console.log(error);
     return res.status(500).send({ success: false, message: "Server error" });
   }
 });
-
-listingRouter.delete('/deletelist/:id',async(req,res)=>{
+listingRouter.delete("/deletelist/:id", async (req, res) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
     const listing = await listingModel.findByIdAndDelete(id);
-    if(!listing){
-      return res.status(404).send({success:false,message:"Listing Not Found"});
+    if (!listing) {
+      return res
+        .status(404)
+        .send({ success: false, message: "Listing Not Found" });
     }
-    return res.status(200).send({success:true,message:"Listing Deleted Successfully",listing});
+    return res.status(200).send({
+      success: true,
+      message: "Listing Deleted Successfully",
+      listing,
+    });
   } catch (error) {
     console.log(error);
-    return res.status(500).send({success:false,message:"Internal Server Error",error})
+    return res
+      .status(500)
+      .send({ success: false, message: "Internal Server Error", error });
   }
-})
+});
 
-listingRouter.put('/updatelist/:id',async(req,res)=>{
+listingRouter.put("/updatelist/:id", async (req, res) => {
   try {
-    const {id} = req.params;
-    const listingdata = req.body
-    const listing = await listingModel.findByIdAndUpdate(id,listingdata,{new:true});
-    if(!listing){
-      return res.status(404).send({success:false,message:"List not found"});
+    const { id } = req.params;
+    const listingdata = req.body;
+    const listing = await listingModel.findByIdAndUpdate(id, listingdata, {
+      new: true,
+    });
+    if (!listing) {
+      return res
+        .status(404)
+        .send({ success: false, message: "List not found" });
     }
-    return res.status(200).send({success:true,message:"List Update successfully",listing});
+    return res
+      .status(200)
+      .send({ success: true, message: "List Update successfully", listing });
   } catch (error) {
     console.log(error);
-    return res.status(500).send({success:false,message:"Internal Server Error"});
+    return res
+      .status(500)
+      .send({ success: false, message: "Internal Server Error" });
   }
-})
+});
 
 module.exports = listingRouter;

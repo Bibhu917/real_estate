@@ -26,7 +26,7 @@ export default function Profile() {
   const [file, setfile] = useState(undefined);
   const [showListingError, setshowListingError] = useState(false);
   const [filepercent, setfilepercent] = useState(0);
-  const [showListing, setshowListing] = useState([])
+  const [showListing, setshowListing] = useState([]);
   const [fileUploadError, setfileUploadError] = useState(false);
   const [updateSuccess, setupdateSuccess] = useState(false);
   const [formData, setformData] = useState({});
@@ -114,32 +114,34 @@ export default function Profile() {
         setshowListingError(true);
         return;
       }
-      setshowListing(response.data.listings)
+      setshowListing(response.data.listing);
     } catch (error) {
       setshowListingError(true);
     }
   };
 
-  const handleDeleteListing=async(listingId)=>{
+  const handleDeleteListing = async (listingId) => {
     try {
       console.log(currentUser.rest._id);
-      const response = await axios.delete(`/api/listing/deletelist/${listingId}`);
+      const response = await axios.delete(
+        `/api/listing/deletelist/${listingId}`
+      );
       console.log(response);
-      if(response.data.success===false){
-        console.log(response.data.message)
+      if (response.data.success === false) {
+        console.log(response.data.message);
       }
       setshowListing((prev) =>
-      prev.map((listing) => {
-        if (listing._id === listingId) {
-          return { ...listing, deleted: true };
-        }
-        return listing;
-      })
-    );
-      } catch (error) {
+        prev.map((listing) => {
+          if (listing._id === listingId) {
+            return { ...listing, deleted: true };
+          }
+          return listing;
+        })
+      );
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <div className="profilePage max-w-lg mx-auto p-3">
@@ -155,11 +157,13 @@ export default function Profile() {
           onChange={(e) => setfile(e.target.files[0])}
         />
         <div className="Textwrapper">
-        <div
-          className={`rounded-full profilediv object-cover flex items-center justify-center text-white ${avatarBackgroundColor}`}
-        >
-          <div className="lletterFont">{getFirstLetter(currentUser.rest.username)}</div>
-        </div>
+          <div
+            className={`rounded-full profilediv object-cover flex items-center justify-center text-white ${avatarBackgroundColor}`}
+          >
+            <div className="lletterFont">
+              {getFirstLetter(currentUser.rest.username)}
+            </div>
+          </div>
         </div>
         <p className="text-sm self-center">
           {fileUploadError ? (
@@ -231,28 +235,38 @@ export default function Profile() {
         <p className="text-red-500 mt-5">
           {showListingError ? "Error showing listings" : ""}
         </p>
-        {showListing && showListing.length>0 &&(
-          showListing.map((listing,index)=>(
+        {showListing &&
+          showListing.length > 0 &&
+          showListing.map((listing, index) => (
             <div key={listing._id} className="">
               <Link to={`/listing/${listing._id}`}>
-               {listing.imageUrls.map((imageurl,index)=>(
-                 <div key={index} className="border rounded-lg flex items-center justify-between p-3">
-                 <img
-                   src={imageurl}
-                   alt="listing image"
-                   className="h-16 w-16 object-contain rounded-lg"
-                 />
-                 <p className="font-semibold text-slate-700 hover:underline truncate">{listing.name}</p> {/* Display the name from the root of the listing object */}
-                 <div className="flex flex-col items-center">
-                  <button className="text-red-700 uppercase" onClick={()=>handleDeleteListing(listing._id)}>Delete</button>
-                  <button className="text-green-700 uppercase">Edit</button>
-                 </div>
-               </div>
-               ))}
+                {listing.imageUrls.map((imageurl, index) => (
+                  <div
+                    key={index}
+                    className="border rounded-lg flex items-center justify-between p-3"
+                  >
+                    <img
+                      src={imageurl}
+                      alt="listing image"
+                      className="h-16 w-16 object-contain rounded-lg"
+                    />
+                    <p className="font-semibold text-slate-700 hover:underline truncate">
+                      {listing.name}
+                    </p>{" "}
+                    {/* Display the name from the root of the listing object */}
+                    <div className="flex flex-col items-center">
+                      <button
+                        className="text-red-700 uppercase"
+                        onClick={() => handleDeleteListing(listing._id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </Link>
-              </div>
-          ))
-        )}
+            </div>
+          ))}
       </div>
     </div>
   );
